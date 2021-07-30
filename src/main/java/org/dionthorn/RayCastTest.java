@@ -12,6 +12,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.net.URI;
 import java.util.ArrayList;
 
 public class RayCastTest extends Application {
@@ -20,26 +22,10 @@ public class RayCastTest extends Application {
     private static final int SCREEN_HEIGHT = 480;
     private final Camera camera = new Camera(4.5, 4.5, 1, 0, 0, -.66);
     private final ArrayList<Texture> textures = new ArrayList<>();
+    private final ArrayList<Map> maps = new ArrayList<>();
+    private Map currentMap;
     private GraphicsContext gc;
     private long lastFrame = 0;
-
-    private static int[][] worldMap = new int[][] {
-            {1,1,1,1,1,1,1,1,2,2,2,2,2,2,2},
-            {1,0,0,0,0,0,0,0,2,0,0,0,0,0,2},
-            {1,0,3,3,3,3,3,0,0,0,0,0,0,0,2},
-            {1,0,3,0,0,0,3,0,2,0,0,0,0,0,2},
-            {1,0,3,0,0,0,3,0,2,2,2,0,2,2,2},
-            {1,0,3,0,0,0,3,0,2,0,0,0,0,0,2},
-            {1,0,3,3,0,3,3,0,2,0,0,0,0,0,2},
-            {1,0,0,0,0,0,0,0,2,0,0,0,0,0,2},
-            {1,1,1,1,1,1,1,1,4,4,4,0,4,4,4},
-            {1,0,0,0,0,0,1,4,0,0,0,0,0,0,4},
-            {1,0,0,0,0,0,1,4,0,0,0,0,0,0,4},
-            {1,0,0,2,0,0,1,4,0,3,3,3,3,0,4},
-            {1,0,0,0,0,0,1,4,0,3,3,3,3,0,4},
-            {1,0,0,0,0,0,0,0,0,0,0,0,0,0,4},
-            {1,1,1,1,1,1,1,4,4,4,4,4,4,4,4}
-    };
 
     public void render() {
         gc.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -97,7 +83,7 @@ public class RayCastTest extends Application {
                     side = 1;
                 }
                 //Check if ray has hit a wall
-                if(worldMap[mapX][mapY] > 0) hit = true;
+                if(currentMap.getMap()[mapX][mapY] > 0) hit = true;
             }
             //Calculate distance to the point of impact
             if(side==0)
@@ -117,7 +103,7 @@ public class RayCastTest extends Application {
             if(drawEnd >= SCREEN_HEIGHT)
                 drawEnd = SCREEN_HEIGHT - 1;
 
-            int texNum = worldMap[mapX][mapY] - 1;
+            int texNum = currentMap.getMap()[mapX][mapY] - 1;
             double wallX;//Exact position of where wall was hit
             if(side==1) {//If its a y-axis wall
                 wallX = (camera.getxPos() + ((mapY - camera.getyPos() + (1 - stepY) / 2d) / rayDirY) * rayDirX);
@@ -143,20 +129,8 @@ public class RayCastTest extends Application {
     }
 
     public void update() {
-        // random camera movement
-        /*
-        Random testing = new Random();
-        int dir = testing.nextInt(100);
-        if(dir < 10) {
-            camera.forward = true;
-        } else if(dir > 10 && dir < 55 ) {
-            camera.left = true;
-        } else if(dir > 55) {
-            camera.right = true;
-        }
-         */
         // Update camera data
-        camera.update(worldMap);
+        camera.update(currentMap);
     }
 
     @Override
@@ -192,11 +166,15 @@ public class RayCastTest extends Application {
         });
 
         // initialize textures
-        textures.add(new Texture("wood.png"));
-        textures.add(new Texture("redbrick.png"));
-        textures.add(new Texture("bluestone.png"));
-        textures.add(new Texture("greystone.png"));
-        textures.add(new Texture("mossy.png"));
+        String[] textureNames = FileOpUtils.getFileNamesFromDirectory(URI.create(getClass().getResource("/Textures/").toString()));
+        for(String textureName: textureNames) {
+            System.out.println(textureName);
+            textures.add(new Texture(textureName));
+        }
+
+        // initialize maps, obviously if more than one map we just want to loop through the Map folder like above
+        maps.add(new Map("0_map.txt"));
+        currentMap = maps.get(0);
 
         // Staging and animator setup
         primaryStage.setScene(rootScene);
@@ -204,7 +182,7 @@ public class RayCastTest extends Application {
         AnimationTimer animator = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                if (now - lastFrame >= 10_000_000) {
+                if (now - lastFrame >= 16_000_000) {
                     update();
                     render();
                     lastFrame = now;

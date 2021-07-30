@@ -32,8 +32,4 @@ public class Texture {
         return height;
     }
 
-    public Image getImage() {
-        return image;
-    }
-
 }

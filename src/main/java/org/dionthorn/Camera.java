@@ -3,11 +3,12 @@ package org.dionthorn;
 public class Camera {
 
     private double xPos, yPos; // Camera position in 2D space { 11.5 , 10 } both positive values
-    private double xDir, yDir; // Camera direction vector { -1, 0 } only -1, 0 or 1 values
+    private double xDir, yDir; // Camera direction vector
     private double xPlane, yPlane; // Camera 2.5D plane position
+    private final double MOVE_SPEED = 1;
+    private final double ROTATION_SPEED = 0.45;
+
     public boolean left, right, forward, back;
-    public final double MOVE_SPEED = .08;
-    public final double ROTATION_SPEED = .045;
 
     public Camera(double xPos, double yPos, double xDir, double yDir, double xPlane, double yPlane) {
         this.xPos = xPos;
@@ -18,19 +19,19 @@ public class Camera {
         this.yPlane = yPlane;
     }
 
-    public void update(int[][] worldMap) {
+    public void update(Map map) {
         if(forward) {
-            if(worldMap[(int)(xPos + xDir * MOVE_SPEED)][(int)yPos] == 0) {
+            if(map.getMap()[(int)(xPos + xDir * MOVE_SPEED)][(int)yPos] == 0) {
                 xPos+=xDir*MOVE_SPEED;
             }
-            if(worldMap[(int)xPos][(int)(yPos + yDir * MOVE_SPEED)] ==0)
+            if(map.getMap()[(int)xPos][(int)(yPos + yDir * MOVE_SPEED)] == 0)
                 yPos+=yDir*MOVE_SPEED;
             forward = false;
         }
         if(back) {
-            if(worldMap[(int)(xPos - xDir * MOVE_SPEED)][(int)yPos] == 0)
+            if(map.getMap()[(int)(xPos - xDir * MOVE_SPEED)][(int)yPos] == 0)
                 xPos-=xDir*MOVE_SPEED;
-            if(worldMap[(int)xPos][(int)(yPos - yDir * MOVE_SPEED)]==0)
+            if(map.getMap()[(int)xPos][(int)(yPos - yDir * MOVE_SPEED)] == 0)
                 yPos-=yDir*MOVE_SPEED;
             back = false;
         }
