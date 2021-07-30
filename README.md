@@ -9,4 +9,4 @@ Probably the most impressive example in Java however this is using Swing/AWT ins
 
 https://github.com/maciej-nowicki/simple-raycaster
 
-![Alt text](/Examples/RayCast.PNG?raw=true "Game Example")
+![Alt text](resources/Examples/RayCast.PNG?raw=true "Game Example")
