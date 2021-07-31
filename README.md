@@ -4,7 +4,7 @@
 
 A simple RayCasting demo using JavaFX learned from various sources
 
-The OG raycasting tutorial - This is where I get the Texutre Files! I DO NOT CLAIM THOSE THEY ARE FREELY AVALIABLE!
+The OG raycasting tutorial - This is where I get the Texutre Files! I DO NOT CLAIM THOSE THEY ARE FREELY AVALIABLE! Copyright is wholly ID software!
 https://lodev.org/cgtutor/raycasting.html
 
 
